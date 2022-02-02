@@ -7,13 +7,17 @@ import React from "react";
 const Hello = <h1>Hello</h1>;
 // we can also use this element in the return function by putting it in curly braces
 // elements are immutable so you can't change it. If you want to change it, you must create a new element to update the UI
-
+//   console.log(Hello);
 // this is a component (function App and all contents). It lets you split the UI into independent reusable pieces
 // element describes what you want to see on the screen e.g. a <p></p>
 // there are two types of components - class based and functional components. Below is a functional component.
 function App() {
-  console.log(Hello);
-  return [<ClassComponent />, <FuncArrow />, <FuncArrow2Lines />];
+  return (
+    <>
+      <ClassComponent today={"Wednesday"} tomorrow={"Thursday"} />,
+      <FuncArrow />, <FuncArrow2Lines />
+    </>
+  );
 }
 
 export default App;
@@ -22,8 +26,22 @@ export default App;
 // render is the method which is required for you to override when you are defining class based components
 // when using a class component that extends React, you must remember to include import React from 'react'; at the top of the page
 class ClassComponent extends React.Component {
+  // you must call the props constructor and use super(props) because otherwise props will be undefined and you will not be able to use it
+  // props are input arguments that are passed into components
+  constructor(props) {
+    super(props);
+  }
+
   render() {
-    return <h1>Class component</h1>;
+    console.log(this.props); // here you can see props is an object with 2 properties
+    // you can also assign the props to a const so that they can be accessed directly
+    const { today, tomorrow } = this.props;
+    return (
+      <h1>
+        Today is {this.props.today}, Tomorrow is {this.props.tomorrow}. Using a
+        const - today is {today} and tomorrow is {tomorrow}
+      </h1>
+    );
   }
 }
 
@@ -43,3 +61,20 @@ const FuncArrow2Lines = (props) => {
 // <FuncArrow />,
 // <FuncArrow2Lines />
 // ]
+// using just an array with return errors in the console so another way to return an array with keys is to use React.Fragment
+// return (
+//   <React.Fragment>
+//     <ClassComponent />, <FuncArrow />, <FuncArrow2Lines />
+//   </React.Fragment>
+// );
+// OR
+// // because this is so handy they developed a shortcut for this which is -
+// return (
+//   <>
+//     <ClassComponent />, <FuncArrow />, <FuncArrow2Lines />
+//   </>
+// );
+
+// When should you use functional or class components?
+// with the introductions of react hooks, functional components now have the ability to store state and can perform side effects
+// functional components are used more now. With functional components, you use have only the functionality you need, but class based come loaded with React functions already
