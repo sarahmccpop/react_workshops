@@ -66,7 +66,7 @@ class ButtonClassComponent extends React.Component {
   // };
 
   render() {
-    console.log("render", this.state.counter);
+    //console.log("render", this.state.counter);
     //console.log(this.props); // here you can see props is an object with 2 properties
     // you can also assign the props to a const so that they can be accessed directly
     const { today, tomorrow } = this.props;
