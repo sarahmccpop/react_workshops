@@ -26,9 +26,17 @@ class ButtonClassComponent extends React.Component {
   }
 }
 class Display extends React.Component {
+  state = { count: this.props.count };
+
+  static getDeriveStateFromProps(props, state) {
+    if (props.count !== state.count) {
+      return { count: props.count };
+    }
+    return null;
+  }
   render() {
-    // currently the state is private so Display can't access it
-    // so we need to lift state up to the App component
-    return <p>Button has been clicked: {this.props.count} </p>;
+    console.log("props", this.props);
+    console.log("state", this.state.count);
+    return <p>Button has been clicked: {this.state.count} </p>;
   }
 }
