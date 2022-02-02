@@ -14,7 +14,7 @@ const Hello = <h1>Hello</h1>;
 function App() {
   return (
     <>
-      <ClassComponent today={"Wednesday"} tomorrow={"Thursday"} />,
+      <ClassComponent today={"Wednesday"} tomorrow={"Thursday"} steps={2} />,
       <FuncArrow />, <FuncArrow2Lines />
     </>
   );
@@ -28,18 +28,36 @@ export default App;
 class ClassComponent extends React.Component {
   // you must call the props constructor and use super(props) because otherwise props will be undefined and you will not be able to use it
   // props are input arguments that are passed into components
-  constructor(props) {
-    super(props);
-  }
+
+  // constructor(props) {
+  //   super(props);
+  //   this.state = { counter: 0 };
+  //   this.handleClick = this.handleClick.bind(this);
+  // }
+  // handleClick() {
+  //   console.log("Handle clicked", this);
+  // }
+  //handleClick = () => console.log("handleClick", this);
+  state = { counter: 0 };
+
+  handleClick = () => {
+    // const prevState = this.state.counter;
+    // this.setState({ counter: prevState + 1 });
+    // this.setState((prevState) => ({ counter: prevState.counter + 1 }));
+    this.setState((prevState, props) => ({
+      counter: prevState.counter + props.steps,
+    }));
+  };
 
   render() {
     console.log(this.props); // here you can see props is an object with 2 properties
     // you can also assign the props to a const so that they can be accessed directly
     const { today, tomorrow } = this.props;
     return (
-      <h1>
+      <h1 onClick={this.handleClick}>
         Today is {this.props.today}, Tomorrow is {this.props.tomorrow}. Using a
         const - today is {today} and tomorrow is {tomorrow}
+        <p>Button has been clicked: {this.state.counter}</p>
       </h1>
     );
   }
