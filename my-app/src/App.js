@@ -1,42 +1,53 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { render } from "react-dom";
-import React from "react";
-class App extends React.Component {
-  state = { counter: 0 };
-  handleClick = () => {
-    this.setState((prevState, props) => ({
-      counter: prevState.counter + props.steps,
-    }));
-  };
-  render() {
-    return (
-      <>
-        <ButtonClassComponent handleClick={this.handleClick} />
-        <Display count={this.state.counter} />,
-      </>
-    );
+import { render, unstable_renderSubtreeIntoContainer } from "react-dom";
+import React, { useState, useEffect } from "react";
+
+async function getData(url) {
+  const response = await fetch(url);
+  if (response.ok) {
+    return response.json();
   }
+  return Promise.reject(response.status);
 }
 
-export default App;
-class ButtonClassComponent extends React.Component {
-  render() {
-    return <button onClick={this.props.handleClick}>Click me</button>;
-  }
-}
-class Display extends React.Component {
-  state = { count: this.props.count };
+export default function App() {
+  const [users, setUsers] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  static getDeriveStateFromProps(props, state) {
-    if (props.count !== state.count) {
-      return { count: props.count };
-    }
-    return null;
+  useEffect(() => {
+    getData("https://jsonplaceholder.typicode.com/users")
+      .then((data) => {
+        setUsers(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error);
+        setLoading(false);
+      });
+  }, []);
+  // the empty array as a 2nd paramenter in useEffect means it will only run the callback only once
+
+  if (loading) {
+    return <h1>Loading...</h1>;
   }
-  render() {
-    console.log("props", this.props);
-    console.log("state", this.state.count);
-    return <p>Button has been clicked: {this.state.count} </p>;
-  }
+  return (
+    <>
+      <h1>All my users: count: {users.length}</h1>
+      <Users users={users} />
+      {error && <p>Sorry, the users failed to load.</p>}
+    </>
+  );
 }
+
+const Users = ({ users }) =>
+  users.map((user) => <User user={user} key={user.id} />);
+
+const User = ({ user: { name, email, phone } }) => (
+  <ul>
+    <strong>{name}</strong>
+    <li>{email}</li>
+    <li>{phone}</li>
+  </ul>
+);
